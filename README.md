@@ -6,7 +6,7 @@ The goal of this project is to define a Terraform template that creates an appli
 Here a design of the system and then the implementation thereof in five steps are provided.
 
 ## Design
-![Application Stack Design](https://drive.google.com/file/d/1T1o9prGmQa_f9cNp7WROYoOfMQXaNHA_/view?usp=sharing)
+![Application Stack Design](https://github.com/aslanpour/aws-terraform/blob/c717027a9e6b1665657b214475c1bc68f21c568b/aws_terraform.jpeg)
 
 
 ## Implementation
