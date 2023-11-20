@@ -10,8 +10,8 @@ Here a design of the system and then the implementation thereof in five steps ar
 
 
 ## Implementation
-Here a description of the Terraform code to achieve each task of the designed system is provided. 
-A sample `variables.tf`, `terraform.tfvars`, and `secret.tfvars` are also provided for testing the template. Their defined variables and values will be clarified in the following tasks as well (noted as *variable*).
+Here a description of the Terraform code to implement the designed system. 
+
 ### Task 0: Terraform Configuration
 The `terraform.tf' file is created to configure the Terraform provider to be 'aws'. It also is set to use particular versions of the provider and Terraform controller. 
 The provider configuration sets three parameters received from defined variables.
@@ -148,6 +148,9 @@ Simply to the followings.
 - When the deployment is successfully completed, run this command to send a request to the application.
 `curl $(terraform output -raw load_balancer_DNS):80`
 - Clean Up: run `terraform destroy` to destroy all the provisioned resources.
+
+---
+
 ### Some questions
 **Please describe how you would implement the following requirements:**
 
