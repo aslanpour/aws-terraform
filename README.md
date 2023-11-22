@@ -53,10 +53,10 @@ This section shows the configuration for AWS Security Group in the `sg.tf` file 
 **Security Groups**. 
 
  - *Load Balancer Security Group*: A security group for the load balancer is created to only allow HTTP requests from anywhere.
- - *Web Server Security Group*: A security group for the web servers is created to allow HTTP requests (only from the load balancer), SSH (from the internal network), and ICMP (from the internal network). With this limited HTTP access, the web servers are secured so that no request can directly enter the web server, without being sourced from the load balancer.
+ - *Web Server Security Group*: A security group for the web servers is created to allow HTTP requests (only from the load balancer), SSH (from the bastion's security group), and ICMP (from the internal network). With this limited HTTP access, the web servers are secured so that no request can directly enter the web server, without being sourced from the load balancer.
  - *Bastion Security Group*: A security group for the bastion host is created to allow SSH from anywhere.
 Note: the outbound traffic for all security groups is allowed.
- - *Private Security Group*: A security group is created for use by instances in the private subnets to allow HTTP (from anywhere), SSH (from the internal network), and ICMP (from the internal network).
+ - *Private Security Group*: A security group is created for use by instances in the private subnets to allow HTTP (from anywhere), SSH (from the bastion's security group), and ICMP (from the internal network).
 
 **Network Access Control Lists (NACL)**. 
 
@@ -157,7 +157,8 @@ Simply to the followings.
 - *Question*: How would you provide shell access into the application stack for operations staff who may want to log into an instance?
 	- *Answer*: The bastion host is designed to serve this purpose. Operations staff can SSH to the bastion host and from there jump to the web servers or even any resource inside the private subnets. The bastion host could have been deployed to a dedicated public subnet for further network isolation.
 	- The bastion host access logs could be stored in a S3 bucket for compliance, as explained [here](https://aws.amazon.com/solutions/implementations/linux-bastion/) and [here](https://aws.amazon.com/blogs/security/how-to-record-ssh-sessions-established-through-a-bastion-host/).
-	- Another solution could be the use of IAM and Systems Manager as explained [here](https://segment.com/blog/infrastructure-access/) and [here](https://aws.amazon.com/blogs/mt/replacing-a-bastion-host-with-amazon-ec2-systems-manager/). This means the instances can run an SSM agent and then with particular IAM roles attached to those instances, the staff can access them securely.
+	- [AWS Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html) is another solution. This allows users to access the EC2 instance through EC2 console, Systems Manager console or AWS CLI. To enable it, the EC2 instance must (1) have `ssm-agent` installed, (2) allow outbound traffic on port 443 to communicate with Systems Manager, and (3) hold proper IAM role permitting `AmazonSSMManagedInstanceCore`. The access logs can be configured by AWS Systems Manager to store in S3 and CloudWatch Logs.
+    - If the user is given EC2 console access, they can also access the instance through EC2 Instance Connect with a public IPv4 address or through EC2 Instance Connect Endpoint with a private IP v4 address and a VPC Endpoint. Note that a VPC Endpoint has a security group that can be introduced to the private instance that are the target of this bastion host.
 
 - *Question*: Make access and error logs available in a monitoring service such as AWS CloudWatch or Azure Monitor.
 	-*Answer*: The Apache web service running on the EC2 instances firstly must properly be configured to log the access and error logs (preferably in a JSON format). 
